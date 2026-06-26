@@ -1,0 +1,35 @@
+---
+title: 'DNS: Namecheap'
+description: 'Publish your Sentvia DNS records in Namecheap.'
+---
+
+After adding a [custom domain](/guides/custom-domains), add the DKIM, SPF, DMARC, and MX records
+Sentvia returned in Namecheap.
+
+<Steps>
+  <Step title="Open Advanced DNS">
+    Namecheap → **Domain List** → **Manage** next to your domain → **Advanced DNS** tab.
+  </Step>
+  <Step title="Enter the Host without your domain">
+    Like GoDaddy, Namecheap appends your domain automatically. In the **Host** field enter only the
+    part before your domain — e.g. `token._domainkey.mail` (not `…mail.yourco.com`). Use `@` for the
+    root.
+  </Step>
+  <Step title="Add DKIM (CNAME ×3) + SPF/DMARC (TXT)">
+    **Add New Record** → choose **CNAME Record** or **TXT Record**, set Host and Value exactly as
+    shown. Leave TTL on **Automatic**.
+  </Step>
+  <Step title="Add the MX records">
+    Add **MX Record** entries; Namecheap has a separate **Priority** field — set it to **10**. (If
+    "Email" is set to Namecheap's own service, switch the **Mail Settings** dropdown to **Custom MX**
+    first.)
+  </Step>
+</Steps>
+
+<Warning>
+  In **Host**, enter only the part before your domain — Namecheap appends the rest. And make sure
+  **Mail Settings** is set to **Custom MX**, or your MX records won't apply.
+</Warning>
+
+Sentvia verifies automatically once the records resolve. Check the **Domains** page in the
+[dashboard](https://console.sentvia.ai) or call `POST /domains/{id}/verify` to re-check.

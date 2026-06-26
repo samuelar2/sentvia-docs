@@ -1,0 +1,35 @@
+---
+title: 'DNS: Cloudflare'
+description: 'Publish your Sentvia DNS records in Cloudflare.'
+---
+
+After adding a [custom domain](/guides/custom-domains), Sentvia gives you a set of DKIM, SPF,
+DMARC, and MX records. Here's how to add them in Cloudflare.
+
+<Steps>
+  <Step title="Open DNS settings">
+    Cloudflare dashboard → select your domain → **DNS → Records**.
+  </Step>
+  <Step title="Add the DKIM records (CNAME ×3)">
+    For each, **Add record** → Type **CNAME**, Name = the `*._domainkey…` value, Target =
+    `…dkim.amazonses.com`. **Set Proxy status to DNS only (grey cloud)** — mail records must not be
+    proxied.
+  </Step>
+  <Step title="Add SPF + DMARC (TXT)">
+    Type **TXT**, Name and Content exactly as shown (e.g. `v=spf1 include:amazonses.com ~all` and
+    the `_dmarc` record). Cloudflare adds the quotes for you — don't paste extra quotes.
+  </Step>
+  <Step title="Add the MX records">
+    Type **MX**, Name as shown, Mail server = the `…amazonaws.com` / `…amazonses.com` target,
+    Priority **10**.
+  </Step>
+</Steps>
+
+<Warning>
+  Keep all of these **DNS only (grey cloud)**. Proxying (orange cloud) breaks mail authentication
+  and routing.
+</Warning>
+
+Sentvia verifies automatically once the records resolve — usually within minutes. Track status on
+the **Domains** page in the [dashboard](https://console.sentvia.ai), or call
+`POST /domains/{id}/verify` to re-check now.

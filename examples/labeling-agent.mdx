@@ -1,0 +1,68 @@
+---
+title: 'Email labeling agent'
+description: 'Classify inbound mail and apply labels automatically.'
+---
+
+Triage incoming email by tagging it. On each inbound message, an LLM picks a category and the
+agent assigns the matching [label](/api-reference/labels/post). The pattern is
+**webhook → classify → assign label**.
+
+## 1. Create your labels once
+
+```bash
+curl -X POST https://api.sentvia.ai/v1/labels \
+  -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
+  -d '{ "name": "Sales", "color": "#10b981" }'
+# repeat for Support, Billing, Spam … keep the returned ids
+```
+
+## 2. Classify and assign on inbound
+
+<CodeGroup>
+```ts TypeScript
+const KEY = process.env.SENTVIA_KEY!;
+const API = "https://api.sentvia.ai/v1";
+const LABELS = { Sales: "lbl_…", Support: "lbl_…", Billing: "lbl_…" };
+
+export async function onInbound(message) {
+  // classify with your LLM -> one of the label names
+  const category = await classify(message.subject, message.body_text); // "Sales" | "Support" | ...
+  const labelId = LABELS[category];
+  if (!labelId) return;
+
+  await fetch(`${API}/labels/${labelId}/assign`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ message_id: message.id }),
+  });
+}
+```
+
+```python Python
+import os, requests
+
+KEY = os.environ["SENTVIA_KEY"]
+API = "https://api.sentvia.ai/v1"
+LABELS = {"Sales": "lbl_…", "Support": "lbl_…", "Billing": "lbl_…"}
+
+def on_inbound(message):
+    category = classify(message["subject"], message.get("body_text", ""))  # your LLM
+    label_id = LABELS.get(category)
+    if not label_id:
+        return
+    requests.post(
+        f"{API}/labels/{label_id}/assign",
+        headers={"Authorization": f"Bearer {KEY}"},
+        json={"message_id": message["id"]},
+    )
+```
+</CodeGroup>
+
+The message's `labels` array now includes the assigned label — visible on
+`GET /messages/{id}`, in [search](/guides/search) results, and in the dashboard. Remove a label
+with `POST /labels/{id}/unassign`.
+
+<Tip>
+  Drive the webhook/inbound trigger exactly like the [auto-reply agent](/examples/auto-reply-agent) —
+  verify the signature, then branch on `message.received`.
+</Tip>

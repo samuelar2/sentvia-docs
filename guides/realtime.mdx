@@ -1,0 +1,79 @@
+---
+title: 'Realtime (WebSocket)'
+description: 'Stream your workspace events live over a WebSocket.'
+---
+
+For low-latency agents, open a WebSocket and Sentvia pushes your events the moment they happen —
+no webhook endpoint required.
+
+## Connect
+
+```
+wss://api.sentvia.ai/v1/realtime?token=sv_live_…
+```
+
+Authentication is the `token` query parameter (a WebSocket handshake can't set headers), using
+the same API key as the REST API.
+
+<CodeGroup>
+```ts TypeScript
+const ws = new WebSocket(`wss://api.sentvia.ai/v1/realtime?token=${process.env.SENTVIA_KEY}`);
+
+ws.onmessage = (e) => {
+  const frame = JSON.parse(e.data);
+  if (frame.event === "connected") return;        // handshake ack
+  if (frame.event === "message.received") {
+    console.log("New email:", frame.message.subject);
+  }
+};
+```
+
+```python Python
+import json, os, websockets, asyncio
+
+async def main():
+    url = f"wss://api.sentvia.ai/v1/realtime?token={os.environ['SENTVIA_KEY']}"
+    async with websockets.connect(url) as ws:
+        async for raw in ws:
+            frame = json.loads(raw)
+            if frame["event"] == "message.received":
+                print("New email:", frame["message"]["subject"])
+
+asyncio.run(main())
+```
+</CodeGroup>
+
+## Frames
+
+The first frame acknowledges the connection:
+
+```json
+{ "event": "connected", "data": { "tenant_id": "…" } }
+```
+
+After that, every event is pushed as a JSON frame with the same shape as the
+[webhook payload](/concepts/receiving) — an `event` field plus the event data:
+
+```json
+{ "event": "message.received", "inbox_id": "…", "thread_id": "…", "message": { … } }
+```
+
+The event names match webhooks: `message.received`, `message.delivered`, `message.bounced`,
+`message.complained`, `message.rejected`.
+
+## Reconnecting
+
+If the socket drops, reconnect and resume. The stream is **live-only** (it doesn't replay missed
+events), so for guaranteed delivery pair it with a [webhook](/concepts/receiving) or reconcile with
+`GET /messages` on reconnect.
+
+## Realtime vs webhooks
+
+| | Realtime (WebSocket) | Webhooks |
+| --- | --- | --- |
+| Latency | Instant push | Instant push |
+| Needs a public URL | No | Yes |
+| Guaranteed delivery / retries | No (live-only) | Yes (retried) |
+| Best for | Interactive agents, live UIs | Reliable server-side processing |
+
+Many apps use **both** — a webhook for durable processing and the WebSocket for a live view.

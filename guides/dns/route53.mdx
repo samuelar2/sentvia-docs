@@ -1,0 +1,32 @@
+---
+title: 'DNS: Route 53 (AWS)'
+description: 'Publish your Sentvia DNS records in Amazon Route 53.'
+---
+
+After adding a [custom domain](/guides/custom-domains), add the DKIM, SPF, DMARC, and MX records
+Sentvia returned in your Route 53 hosted zone.
+
+<Steps>
+  <Step title="Open the hosted zone">
+    AWS Console → **Route 53 → Hosted zones** → select the zone for your domain.
+  </Step>
+  <Step title="Add the DKIM records (CNAME ×3)">
+    **Create record** → Record name = the `*._domainkey…` value (Route 53 shows the zone suffix
+    greyed out, so enter only the part before it), Type **CNAME**, Value = `…dkim.amazonses.com`.
+  </Step>
+  <Step title="Add SPF + DMARC (TXT)">
+    Type **TXT**, with the value **wrapped in double quotes**, e.g. `"v=spf1 include:amazonses.com ~all"`.
+    The `_dmarc` record likewise.
+  </Step>
+  <Step title="Add the MX records">
+    Type **MX**, Value in the form `10 inbound-smtp.us-east-1.amazonaws.com` (priority then host).
+  </Step>
+</Steps>
+
+<Tip>
+  Prefer infrastructure-as-code? The same records map cleanly to
+  `aws_route53_record` resources in Terraform — one per record, `ttl = 300`.
+</Tip>
+
+Sentvia verifies automatically once the records resolve. Track status on the **Domains** page in
+the [dashboard](https://console.sentvia.ai) or call `POST /domains/{id}/verify`.

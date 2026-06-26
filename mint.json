@@ -47,7 +47,7 @@
   "navigation": [
     {
       "group": "Get started",
-      "pages": ["introduction", "quickstart", "authentication"]
+      "pages": ["introduction", "quickstart", "authentication", "for-agents"]
     },
     {
       "group": "Core concepts",
@@ -64,10 +64,29 @@
         "guides/search",
         "guides/attachments",
         "guides/custom-domains",
+        "guides/deliverability",
+        "guides/realtime",
         "guides/allow-block-lists",
         "guides/mcp",
         "guides/errors"
       ]
+    },
+    {
+      "group": "Examples",
+      "pages": ["examples/auto-reply-agent", "examples/labeling-agent"]
+    },
+    {
+      "group": "DNS guides",
+      "pages": [
+        "guides/dns/cloudflare",
+        "guides/dns/godaddy",
+        "guides/dns/route53",
+        "guides/dns/namecheap"
+      ]
+    },
+    {
+      "group": "Troubleshooting",
+      "pages": ["faq"]
     },
     {
       "group": "API reference",

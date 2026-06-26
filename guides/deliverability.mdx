@@ -1,0 +1,50 @@
+---
+title: 'Deliverability'
+description: 'How Sentvia keeps your mail out of spam — SPF, DKIM, DMARC, and good sending hygiene.'
+---
+
+Landing in the inbox comes down to **authentication** (proving you're allowed to send) and
+**reputation** (a track record of wanted mail). Sentvia handles the hard parts; this explains
+what's happening and how to keep it healthy.
+
+## The three records
+
+When you verify a [custom domain](/guides/custom-domains), Sentvia gives you these to publish.
+On the shared `mail.sentvia.ai` domain they're already in place.
+
+| Record | What it proves | What Sentvia returns |
+| --- | --- | --- |
+| **DKIM** (CNAME ×3) | The message wasn't tampered with and came from you | `<token>._domainkey.<domain>` → `<token>.dkim.amazonses.com` |
+| **SPF** (TXT) | The sending servers are authorized for your domain | `v=spf1 include:amazonses.com ~all` |
+| **DMARC** (TXT) | What receivers should do if SPF/DKIM fail | `_dmarc.<domain>` → `v=DMARC1; p=…; rua=mailto:dmarc@sentvia.ai` |
+| **MAIL-FROM** (MX + TXT) | Aligns the bounce domain with your domain (SPF alignment) | `feedback-smtp.<region>.amazonses.com` + an SPF TXT |
+| **Inbound** (MX) | Routes replies back to your inboxes | `inbound-smtp.<region>.amazonaws.com` |
+
+Publish them with your DNS provider — step-by-step guides for
+[Cloudflare](/guides/dns/cloudflare), [GoDaddy](/guides/dns/godaddy),
+[Route 53](/guides/dns/route53), and [Namecheap](/guides/dns/namecheap).
+
+## Ramp your DMARC policy
+
+Start permissive and tighten as you build history. Sentvia lets you ramp the policy
+(`POST /domains/{id}/dmarc`):
+
+<Steps>
+  <Step title="p=none">Monitor only — collect reports, change nothing. Start here.</Step>
+  <Step title="p=quarantine">Failing mail goes to spam. Move here once SPF/DKIM pass consistently.</Step>
+  <Step title="p=reject">Failing mail is rejected outright — full anti-spoofing. The end goal.</Step>
+</Steps>
+
+## Reputation hygiene
+
+- **Warm up.** Ramp volume gradually on a new domain rather than blasting from day one.
+- **Keep bounce/complaint rates low.** Sentvia auto-suppresses bounced and complained addresses so
+  you never re-send to them — watch your [Metrics](https://console.sentvia.ai) deliverability score.
+- **Send wanted mail.** Relevant, expected messages with easy opt-out beat volume every time.
+- **Use a dedicated subdomain/IP** (Scale and up) to isolate your reputation from other tenants.
+
+## "Why am I going to spam?"
+
+Most often: the domain isn't fully authenticated (a missing/typo'd DKIM or SPF record), the content
+looks spammy, or the domain is cold. Verify all records resolve, warm up slowly, and check the
+deliverability score on the dashboard. See the [FAQ](/faq) for quick fixes.

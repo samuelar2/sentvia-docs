@@ -1,0 +1,80 @@
+---
+title: 'FAQ & troubleshooting'
+description: 'Common questions and how to resolve the errors you might hit.'
+---
+
+## Getting started
+
+<AccordionGroup>
+  <Accordion title="How do I get an API key?">
+    In the [dashboard](https://console.sentvia.ai) → **API keys** → create a key. It looks like
+    `sv_live_…`. Pass it as `Authorization: Bearer sv_live_…` on every request. Keys are
+    workspace-scoped; create one per service or environment and revoke freely.
+  </Accordion>
+  <Accordion title="How do I create my first inbox?">
+    `POST /inboxes { "local_part": "support-bot" }` returns an address on the shared
+    `mail.sentvia.ai` domain, live immediately — no DNS setup. See [Inboxes](/concepts/inboxes).
+  </Accordion>
+  <Accordion title="How do I handle inbound email?">
+    Two options: register a [webhook](/concepts/receiving) for `message.received` (push,
+    recommended), or poll `GET /messages?inbox_id=…`. For low-latency agents, stream events over
+    the [realtime WebSocket](/guides/realtime).
+  </Accordion>
+  <Accordion title="How do I keep replies in the same conversation?">
+    Use `POST /messages/{id}/reply` — Sentvia derives the recipient and sets the
+    `In-Reply-To`/`References` headers automatically. See [Threads](/concepts/threads).
+  </Accordion>
+  <Accordion title="How do I block or allow specific senders?">
+    Add rules with `POST /lists` (`kind`: allow/block, `direction`, `pattern`). See
+    [Allow & block lists](/guides/allow-block-lists). Bounces and complaints are auto-suppressed
+    separately.
+  </Accordion>
+</AccordionGroup>
+
+## Errors
+
+<AccordionGroup>
+  <Accordion title="What does a 401 mean?">
+    Missing or invalid API key. Check the `Authorization: Bearer …` header and that the key
+    hasn't been revoked.
+  </Accordion>
+  <Accordion title="What does a 402 (with upgrade: true) mean?">
+    A plan limit was hit. The `error` tells you which: `inbox_limit_reached`,
+    `custom_domains_require_paid_plan`, `dedicated_subdomain_requires_scale`, or
+    `storage_limit_reached`. Upgrade from [Billing](https://console.sentvia.ai).
+  </Accordion>
+  <Accordion title='Why do I get 409 "address_taken"?'>
+    That inbox address is already in use (addresses are globally unique on the shared domain).
+    Pick a different `local_part`.
+  </Accordion>
+  <Accordion title='Why do I get 413 "attachment_too_large"?'>
+    A single email's attachments must fit within ~7 MB (the encoded message stays under the 10 MB
+    provider limit). Split large files or share a link instead. See [Attachments](/guides/attachments).
+  </Accordion>
+  <Accordion title="Why do I get 422 on send?">
+    Every recipient was suppressed (a prior bounce/complaint) or on your block list, so there was
+    no one deliverable. The response lists the blocked addresses.
+  </Accordion>
+</AccordionGroup>
+
+## Deliverability
+
+<AccordionGroup>
+  <Accordion title="Why are my emails bouncing?">
+    Hard bounces add the address to your automatic suppression list so you don't keep sending to
+    it. Check the recipient is valid; subsequent sends to a suppressed address are dropped.
+  </Accordion>
+  <Accordion title="Why isn't my custom domain verifying?">
+    Publish all returned DNS records (DKIM, SPF, DMARC, MAIL-FROM) exactly, with no extra quoting,
+    and give DNS a few minutes to propagate. See the [DNS guides](/guides/dns/cloudflare) and
+    [Deliverability](/guides/deliverability).
+  </Accordion>
+  <Accordion title="How do I prevent duplicate sends?">
+    Pass a unique `client_id` on `POST /messages`. A repeated `client_id` returns the original
+    message instead of sending again — safe to retry after a timeout.
+  </Accordion>
+  <Accordion title="Why are my emails going to spam?">
+    Authenticate with a verified custom domain (SPF/DKIM/DMARC), warm up volume gradually, and keep
+    bounce/complaint rates low. Full guidance in [Deliverability](/guides/deliverability).
+  </Accordion>
+</AccordionGroup>
