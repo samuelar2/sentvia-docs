@@ -1,0 +1,203 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Sentvia",
+  "colors": {
+    "primary": "#4f46e5",
+    "light": "#6366f1",
+    "dark": "#4338ca"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "authentication",
+              "for-agents"
+            ]
+          },
+          {
+            "group": "Core concepts",
+            "pages": [
+              "concepts/inboxes",
+              "concepts/sending",
+              "concepts/receiving",
+              "concepts/threads"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/search",
+              "guides/attachments",
+              "guides/custom-domains",
+              "guides/deliverability",
+              "guides/realtime",
+              "guides/allow-block-lists",
+              "guides/mcp",
+              "guides/errors"
+            ]
+          },
+          {
+            "group": "Examples",
+            "pages": [
+              "examples/auto-reply-agent",
+              "examples/labeling-agent"
+            ]
+          },
+          {
+            "group": "DNS guides",
+            "pages": [
+              "guides/dns/cloudflare",
+              "guides/dns/godaddy",
+              "guides/dns/route53",
+              "guides/dns/namecheap"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "faq"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API reference",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Inboxes",
+            "pages": [
+              "api-reference/inboxes/post",
+              "api-reference/inboxes/get",
+              "api-reference/inboxes/delete-id"
+            ]
+          },
+          {
+            "group": "Messages",
+            "pages": [
+              "api-reference/messages/post",
+              "api-reference/messages/get",
+              "api-reference/messages/get-id",
+              "api-reference/messages/post-id-reply",
+              "api-reference/messages/post-id-forward"
+            ]
+          },
+          {
+            "group": "Threads",
+            "pages": [
+              "api-reference/threads/get",
+              "api-reference/threads/get-id"
+            ]
+          },
+          {
+            "group": "Domains",
+            "pages": [
+              "api-reference/domains/post",
+              "api-reference/domains/get",
+              "api-reference/domains/post-subdomain",
+              "api-reference/domains/get-id",
+              "api-reference/domains/post-id-dmarc",
+              "api-reference/domains/post-id-verify",
+              "api-reference/domains/delete-id"
+            ]
+          },
+          {
+            "group": "Drafts",
+            "pages": [
+              "api-reference/drafts/post",
+              "api-reference/drafts/get",
+              "api-reference/drafts/get-id",
+              "api-reference/drafts/patch-id",
+              "api-reference/drafts/post-id-send",
+              "api-reference/drafts/delete-id"
+            ]
+          },
+          {
+            "group": "Labels",
+            "pages": [
+              "api-reference/labels/post",
+              "api-reference/labels/get",
+              "api-reference/labels/post-id-assign",
+              "api-reference/labels/post-id-unassign",
+              "api-reference/labels/delete-id"
+            ]
+          },
+          {
+            "group": "Lists",
+            "pages": [
+              "api-reference/lists/post",
+              "api-reference/lists/get",
+              "api-reference/lists/delete-id"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "api-reference/webhooks/post",
+              "api-reference/webhooks/get",
+              "api-reference/webhooks/delete-id"
+            ]
+          },
+          {
+            "group": "Attachments",
+            "pages": [
+              "api-reference/attachments/get-id"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Dashboard",
+          "href": "https://console.sentvia.ai",
+          "icon": "gauge"
+        },
+        {
+          "anchor": "Website",
+          "href": "https://sentvia.ai",
+          "icon": "globe"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "api": {
+    "openapi": "https://api.sentvia.ai/openapi.json"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:support@sentvia.ai"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Open dashboard",
+      "href": "https://console.sentvia.ai"
+    }
+  },
+  "footer": {
+    "socials": {
+      "website": "https://sentvia.ai"
+    }
+  }
+}
