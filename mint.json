@@ -96,6 +96,18 @@
       "pages": ["api-reference/threads/get", "api-reference/threads/get-id"]
     },
     {
+      "group": "Domains",
+      "pages": [
+        "api-reference/domains/post",
+        "api-reference/domains/get",
+        "api-reference/domains/post-subdomain",
+        "api-reference/domains/get-id",
+        "api-reference/domains/post-id-dmarc",
+        "api-reference/domains/post-id-verify",
+        "api-reference/domains/delete-id"
+      ]
+    },
+    {
       "group": "Drafts",
       "pages": [
         "api-reference/drafts/post",
