@@ -23,7 +23,7 @@ ws.onmessage = (e) => {
   const frame = JSON.parse(e.data);
   if (frame.event === "connected") return;        // handshake ack
   if (frame.event === "message.received") {
-    console.log("New email:", frame.message.subject);
+    console.log("New email:", frame.data.message.subject);
   }
 };
 ```
@@ -37,7 +37,7 @@ async def main():
         async for raw in ws:
             frame = json.loads(raw)
             if frame["event"] == "message.received":
-                print("New email:", frame["message"]["subject"])
+                print("New email:", frame["data"]["message"]["subject"])
 
 asyncio.run(main())
 ```
@@ -51,15 +51,27 @@ The first frame acknowledges the connection:
 { "event": "connected", "data": { "tenant_id": "…" } }
 ```
 
-After that, every event is pushed as a JSON frame with the same shape as the
-[webhook payload](/concepts/receiving) — an `event` field plus the event data:
+After that, every event is pushed as `{ event, data }`, where `data` carries the same fields as the
+corresponding [webhook payload](/concepts/receiving):
 
 ```json
-{ "event": "message.received", "inbox_id": "…", "thread_id": "…", "message": { … } }
+{
+  "event": "message.received",
+  "data": {
+    "inbox_id": "…",
+    "thread_id": "…",
+    "message": { "id": "…", "from": "…", "subject": "…", "text": "…", "attachments": [] }
+  }
+}
 ```
 
 The event names match webhooks: `message.received`, `message.delivered`, `message.bounced`,
 `message.complained`, `message.rejected`.
+
+<Note>
+  Realtime frames nest the payload under `data`; webhooks deliver the same fields flat alongside
+  `event`. Read `frame.data.*` over the socket.
+</Note>
 
 ## Reconnecting
 
