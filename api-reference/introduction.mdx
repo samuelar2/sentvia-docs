@@ -9,7 +9,7 @@ and response bodies, and standard HTTP status codes.
 ## Base URL
 
 ```
-https://sentvia-api-production.up.railway.app/v1
+https://api.sentvia.ai/v1
 ```
 
 ## Authentication
@@ -17,7 +17,7 @@ https://sentvia-api-production.up.railway.app/v1
 Every request requires a Bearer API key:
 
 ```bash
-curl https://sentvia-api-production.up.railway.app/v1/inboxes \
+curl https://api.sentvia.ai/v1/inboxes \
   -H "Authorization: Bearer sv_live_…"
 ```
 
@@ -33,5 +33,5 @@ Create and revoke keys in the [dashboard](https://console.sentvia.ai). See
 - **Idempotency** — pass a `client_id` on sends to make retries safe.
 
 The endpoints in this section are generated from our
-[OpenAPI spec](https://sentvia-api-production.up.railway.app/openapi.json) — use the
+[OpenAPI spec](https://api.sentvia.ai/openapi.json) — use the
 **Try it** panel to call them live with your key.

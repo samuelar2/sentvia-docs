@@ -9,7 +9,7 @@ domains, on top of the automatic suppression of bounces and complaints.
 ## Add a rule
 
 ```bash
-curl -X POST https://sentvia-api-production.up.railway.app/v1/lists \
+curl -X POST https://api.sentvia.ai/v1/lists \
   -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
   -d '{ "kind": "block", "direction": "outbound", "pattern": "competitor.com" }'
 ```

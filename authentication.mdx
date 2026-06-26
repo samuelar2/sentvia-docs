@@ -6,7 +6,7 @@ description: 'API keys, the base URL, and how requests are authenticated.'
 ## Base URL
 
 ```
-https://sentvia-api-production.up.railway.app/v1
+https://api.sentvia.ai/v1
 ```
 
 All product endpoints live under `/v1`. Requests and responses are JSON.
@@ -23,7 +23,7 @@ sv_live_3Sg…
 Pass it on every request:
 
 ```bash
-curl https://sentvia-api-production.up.railway.app/v1/inboxes \
+curl https://api.sentvia.ai/v1/inboxes \
   -H "Authorization: Bearer sv_live_…"
 ```
 

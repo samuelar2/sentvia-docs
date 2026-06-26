@@ -15,14 +15,14 @@ secret — treat a key like a password.
 
 <CodeGroup>
 ```bash cURL
-curl -X POST https://sentvia-api-production.up.railway.app/v1/inboxes \
+curl -X POST https://api.sentvia.ai/v1/inboxes \
   -H "Authorization: Bearer sv_live_…" \
   -H "Content-Type: application/json" \
   -d '{ "local_part": "support-bot", "display_name": "Support" }'
 ```
 
 ```ts TypeScript
-const res = await fetch("https://sentvia-api-production.up.railway.app/v1/inboxes", {
+const res = await fetch("https://api.sentvia.ai/v1/inboxes", {
   method: "POST",
   headers: { Authorization: `Bearer ${process.env.SENTVIA_KEY}`, "Content-Type": "application/json" },
   body: JSON.stringify({ local_part: "support-bot", display_name: "Support" }),
@@ -33,7 +33,7 @@ const inbox = await res.json(); // { id, address: "support-bot@mail.sentvia.ai" 
 ```python Python
 import requests
 inbox = requests.post(
-    "https://sentvia-api-production.up.railway.app/v1/inboxes",
+    "https://api.sentvia.ai/v1/inboxes",
     headers={"Authorization": f"Bearer {KEY}"},
     json={"local_part": "support-bot", "display_name": "Support"},
 ).json()  # { "id": "...", "address": "support-bot@mail.sentvia.ai" }
@@ -47,7 +47,7 @@ setup required. (Want your own brand? See [Custom domains](/guides/custom-domain
 
 <CodeGroup>
 ```bash cURL
-curl -X POST https://sentvia-api-production.up.railway.app/v1/messages \
+curl -X POST https://api.sentvia.ai/v1/messages \
   -H "Authorization: Bearer sv_live_…" \
   -H "Content-Type: application/json" \
   -d '{
@@ -59,7 +59,7 @@ curl -X POST https://sentvia-api-production.up.railway.app/v1/messages \
 ```
 
 ```ts TypeScript
-await fetch("https://sentvia-api-production.up.railway.app/v1/messages", {
+await fetch("https://api.sentvia.ai/v1/messages", {
   method: "POST",
   headers: { Authorization: `Bearer ${process.env.SENTVIA_KEY}`, "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -81,7 +81,7 @@ When the customer replies, Sentvia threads it and POSTs a `message.received`
 event to your webhook. Register one in two lines:
 
 ```bash
-curl -X POST https://sentvia-api-production.up.railway.app/v1/webhooks \
+curl -X POST https://api.sentvia.ai/v1/webhooks \
   -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
   -d '{ "url": "https://your-app.com/sentvia", "events": ["message.received"] }'
 ```

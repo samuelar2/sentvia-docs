@@ -9,7 +9,7 @@ group messages into threads, and are the unit you provision per agent, user, or 
 ## Create an inbox
 
 ```bash
-curl -X POST https://sentvia-api-production.up.railway.app/v1/inboxes \
+curl -X POST https://api.sentvia.ai/v1/inboxes \
   -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
   -d '{ "local_part": "support-bot", "display_name": "Support" }'
 ```
@@ -37,8 +37,8 @@ curl -X POST https://sentvia-api-production.up.railway.app/v1/inboxes \
 ## List & delete
 
 ```bash
-curl https://sentvia-api-production.up.railway.app/v1/inboxes -H "Authorization: Bearer sv_live_…"
-curl -X DELETE https://sentvia-api-production.up.railway.app/v1/inboxes/INBOX_ID -H "Authorization: Bearer sv_live_…"
+curl https://api.sentvia.ai/v1/inboxes -H "Authorization: Bearer sv_live_…"
+curl -X DELETE https://api.sentvia.ai/v1/inboxes/INBOX_ID -H "Authorization: Bearer sv_live_…"
 ```
 
 ## Inbox limits

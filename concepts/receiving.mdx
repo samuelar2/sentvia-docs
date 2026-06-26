@@ -9,7 +9,7 @@ ways: **webhooks** (push, recommended) or **polling** with `GET /messages`.
 ## Register a webhook
 
 ```bash
-curl -X POST https://sentvia-api-production.up.railway.app/v1/webhooks \
+curl -X POST https://api.sentvia.ai/v1/webhooks \
   -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
   -d '{ "url": "https://your-app.com/sentvia", "events": ["message.received","message.bounced"] }'
 ```

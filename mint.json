@@ -15,7 +15,7 @@
       "to": "#6366f1"
     }
   },
-  "openapi": "https://sentvia-api-production.up.railway.app/openapi.json",
+  "openapi": "https://api.sentvia.ai/openapi.json",
   "topbarLinks": [
     {
       "name": "Support",
