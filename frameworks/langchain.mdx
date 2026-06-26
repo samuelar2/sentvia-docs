@@ -1,0 +1,58 @@
+---
+title: 'LangChain'
+description: 'Give a LangChain agent email tools backed by Sentvia.'
+---
+
+Wrap Sentvia operations as LangChain tools with the `@tool` decorator, then hand them to an agent.
+
+## Install
+
+```bash
+pip install langchain langchain-openai langgraph requests
+```
+
+## Define the tools
+
+```python
+import os, requests
+from langchain_core.tools import tool
+
+API = "https://api.sentvia.ai/v1"
+H = {"Authorization": f"Bearer {os.environ['SENTVIA_KEY']}"}
+
+@tool
+def create_inbox(local_part: str) -> dict:
+    """Create a new email inbox. Returns its id and address."""
+    return requests.post(f"{API}/inboxes", headers=H, json={"local_part": local_part}).json()
+
+@tool
+def send_email(inbox_id: str, to: str, subject: str, body: str) -> dict:
+    """Send an email from an inbox to a recipient."""
+    return requests.post(f"{API}/messages", headers=H,
+        json={"inbox_id": inbox_id, "to": [to], "subject": subject, "text": body}).json()
+
+@tool
+def check_inbox(inbox_id: str) -> list:
+    """List the most recent messages in an inbox."""
+    return requests.get(f"{API}/messages", headers=H,
+        params={"inbox_id": inbox_id, "limit": 10}).json()["messages"]
+```
+
+## Run an agent
+
+```python
+from langchain_openai import ChatOpenAI
+from langgraph.prebuilt import create_react_agent
+
+agent = create_react_agent(ChatOpenAI(model="gpt-4o"), [create_inbox, send_email, check_inbox])
+
+result = agent.invoke({"messages": [
+    ("user", "Create an inbox called concierge and email jane@acme.com a welcome note.")
+]})
+print(result["messages"][-1].content)
+```
+
+The model now calls `create_inbox` then `send_email` on its own. Add `reply` and `check_inbox`
+tools to build a full back-and-forth agent.
+
+<Tip>Prefer no glue at all? Connect the [Sentvia MCP server](/guides/mcp) and skip tool definitions.</Tip>

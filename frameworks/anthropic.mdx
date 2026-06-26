@@ -1,0 +1,63 @@
+---
+title: 'Anthropic (Claude)'
+description: 'Email tools for Claude via the Anthropic Messages API.'
+---
+
+Give Claude email tools by declaring them in the `tools` parameter and handling `tool_use` blocks.
+
+## Install
+
+```bash
+pip install anthropic requests
+```
+
+## Define tools and run the loop
+
+```python
+import os, requests, anthropic
+
+API = "https://api.sentvia.ai/v1"
+H = {"Authorization": f"Bearer {os.environ['SENTVIA_KEY']}"}
+client = anthropic.Anthropic()
+
+TOOLS = [
+    {
+        "name": "send_email",
+        "description": "Send an email from an inbox to a recipient.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "inbox_id": {"type": "string"},
+                "to": {"type": "string"},
+                "subject": {"type": "string"},
+                "body": {"type": "string"},
+            },
+            "required": ["inbox_id", "to", "subject", "body"],
+        },
+    }
+]
+
+def run_tool(name, args):
+    if name == "send_email":
+        return requests.post(f"{API}/messages", headers=H, json={
+            "inbox_id": args["inbox_id"], "to": [args["to"]],
+            "subject": args["subject"], "text": args["body"],
+        }).json()
+
+messages = [{"role": "user", "content": "Email jane@acme.com from inbox inb_123 to say hi."}]
+while True:
+    resp = client.messages.create(model="claude-sonnet-4-6", max_tokens=1024, tools=TOOLS, messages=messages)
+    messages.append({"role": "assistant", "content": resp.content})
+    tool_uses = [b for b in resp.content if b.type == "tool_use"]
+    if not tool_uses:
+        print(resp.content[-1].text); break
+    messages.append({"role": "user", "content": [
+        {"type": "tool_result", "tool_use_id": b.id, "content": str(run_tool(b.name, b.input))}
+        for b in tool_uses
+    ]})
+```
+
+<Tip>
+  Claude Desktop and other MCP hosts can use the [Sentvia MCP server](/guides/mcp) directly — no tool
+  schemas to maintain.
+</Tip>

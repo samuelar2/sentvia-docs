@@ -1,0 +1,48 @@
+---
+title: 'CrewAI'
+description: 'Give a CrewAI agent email tools backed by Sentvia.'
+---
+
+CrewAI exposes tools via the `@tool` decorator; attach them to an agent.
+
+## Install
+
+```bash
+pip install crewai crewai-tools requests
+```
+
+## Define the tools and crew
+
+```python
+import os, requests
+from crewai import Agent, Task, Crew
+from crewai.tools import tool
+
+API = "https://api.sentvia.ai/v1"
+H = {"Authorization": f"Bearer {os.environ['SENTVIA_KEY']}"}
+
+@tool("Send email")
+def send_email(inbox_id: str, to: str, subject: str, body: str) -> str:
+    """Send an email from an inbox to a recipient."""
+    r = requests.post(f"{API}/messages", headers=H,
+        json={"inbox_id": inbox_id, "to": [to], "subject": subject, "text": body}).json()
+    return f"sent: {r.get('id')}"
+
+@tool("Check inbox")
+def check_inbox(inbox_id: str) -> list:
+    """List recent messages in an inbox."""
+    return requests.get(f"{API}/messages", headers=H,
+        params={"inbox_id": inbox_id, "limit": 10}).json()["messages"]
+
+concierge = Agent(
+    role="Email concierge",
+    goal="Handle the inbox and reply to customers",
+    backstory="You are a fast, friendly support agent.",
+    tools=[send_email, check_inbox],
+)
+
+task = Task(description="Check inbox inb_123 and draft replies.", agent=concierge, expected_output="A summary of actions taken.")
+print(Crew(agents=[concierge], tasks=[task]).kickoff())
+```
+
+<Tip>CrewAI also supports MCP — the [Sentvia MCP server](/guides/mcp) gives you these tools with no wrappers.</Tip>

@@ -1,0 +1,52 @@
+---
+title: 'OpenAI Agents SDK'
+description: 'Email tools for the OpenAI Agents SDK.'
+---
+
+The OpenAI Agents SDK turns plain Python functions into tools with `@function_tool`.
+
+## Install
+
+```bash
+pip install openai-agents requests
+```
+
+## Define the tools and agent
+
+```python
+import os, requests
+from agents import Agent, Runner, function_tool
+
+API = "https://api.sentvia.ai/v1"
+H = {"Authorization": f"Bearer {os.environ['SENTVIA_KEY']}"}
+
+@function_tool
+def send_email(inbox_id: str, to: str, subject: str, body: str) -> dict:
+    """Send an email from an inbox."""
+    return requests.post(f"{API}/messages", headers=H,
+        json={"inbox_id": inbox_id, "to": [to], "subject": subject, "text": body}).json()
+
+@function_tool
+def check_inbox(inbox_id: str) -> list:
+    """List recent messages in an inbox."""
+    return requests.get(f"{API}/messages", headers=H,
+        params={"inbox_id": inbox_id, "limit": 10}).json()["messages"]
+
+@function_tool
+def reply(message_id: str, body: str) -> dict:
+    """Reply to a message, keeping it in thread."""
+    return requests.post(f"{API}/messages/{message_id}/reply", headers=H, json={"text": body}).json()
+
+agent = Agent(
+    name="Email agent",
+    instructions="You manage an email inbox. Triage and reply to messages.",
+    tools=[send_email, check_inbox, reply],
+)
+
+result = Runner.run_sync(agent, "Check inbox inb_123 and reply to anything urgent.")
+print(result.final_output)
+```
+
+The runner loops tool calls automatically until the agent is done.
+
+<Tip>If your runtime speaks MCP, the [Sentvia MCP server](/guides/mcp) exposes these same operations with no wrapper code.</Tip>

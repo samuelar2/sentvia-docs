@@ -1,0 +1,54 @@
+---
+title: 'Vercel AI SDK'
+description: 'Email tools for the Vercel AI SDK (TypeScript).'
+---
+
+Define Sentvia operations as AI SDK tools with `tool()` + a Zod schema, then pass them to
+`generateText` (or `streamText`).
+
+## Install
+
+```bash
+npm install ai @ai-sdk/openai zod
+```
+
+## Define the tools
+
+```ts
+import { generateText, tool } from "ai";
+import { openai } from "@ai-sdk/openai";
+import { z } from "zod";
+
+const API = "https://api.sentvia.ai/v1";
+const H = { Authorization: `Bearer ${process.env.SENTVIA_KEY}`, "Content-Type": "application/json" };
+const call = (path: string, body?: unknown, method = "POST") =>
+  fetch(`${API}${path}`, { method, headers: H, body: body && JSON.stringify(body) }).then((r) => r.json());
+
+const tools = {
+  sendEmail: tool({
+    description: "Send an email from an inbox.",
+    parameters: z.object({ inboxId: z.string(), to: z.string(), subject: z.string(), body: z.string() }),
+    execute: ({ inboxId, to, subject, body }) =>
+      call("/messages", { inbox_id: inboxId, to: [to], subject, text: body }),
+  }),
+  checkInbox: tool({
+    description: "List recent messages in an inbox.",
+    parameters: z.object({ inboxId: z.string() }),
+    execute: ({ inboxId }) => call(`/messages?inbox_id=${inboxId}&limit=10`, undefined, "GET"),
+  }),
+};
+```
+
+## Run
+
+```ts
+const { text } = await generateText({
+  model: openai("gpt-4o"),
+  tools,
+  maxSteps: 5,                 // let the model chain tool calls
+  prompt: "Check inbox inb_123 and summarise anything that needs a reply.",
+});
+console.log(text);
+```
+
+<Tip>For zero wrapper code, point an MCP-capable runtime at the [Sentvia MCP server](/guides/mcp).</Tip>

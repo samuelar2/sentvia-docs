@@ -1,0 +1,46 @@
+---
+title: 'Agent frameworks'
+description: 'Drop Sentvia into LangChain, CrewAI, the OpenAI Agents SDK, the Vercel AI SDK, and more.'
+---
+
+Sentvia is just a REST API, so it plugs into any agent framework. There are two paths:
+
+<CardGroup cols={2}>
+  <Card title="MCP (zero glue)" icon="plug" href="/guides/mcp">
+    Connect the [Sentvia MCP server](/guides/mcp) and email becomes native tools — no per-framework
+    wiring. Best if your runtime speaks MCP.
+  </Card>
+  <Card title="Native tools" icon="wrench" href="/frameworks/langchain">
+    Wrap a few REST calls as your framework's tool type. Use this when you want full control or your
+    framework doesn't do MCP yet.
+  </Card>
+</CardGroup>
+
+## The tool surface
+
+Whatever the framework, you're exposing a handful of operations to the model. The recipes use these:
+
+| Tool | Endpoint |
+| --- | --- |
+| `create_inbox(local_part)` | `POST /inboxes` |
+| `send_email(inbox_id, to, subject, body)` | `POST /messages` |
+| `check_inbox(inbox_id)` | `GET /messages?inbox_id=…` |
+| `reply(message_id, body)` | `POST /messages/{id}/reply` |
+
+Each call is a Bearer-authenticated request to `https://api.sentvia.ai/v1` ([auth](/authentication)).
+
+## Recipes
+
+<CardGroup cols={3}>
+  <Card title="LangChain" href="/frameworks/langchain" />
+  <Card title="OpenAI Agents SDK" href="/frameworks/openai-agents" />
+  <Card title="Vercel AI SDK" href="/frameworks/vercel-ai-sdk" />
+  <Card title="CrewAI" href="/frameworks/crewai" />
+  <Card title="LlamaIndex" href="/frameworks/llamaindex" />
+  <Card title="Anthropic (Claude)" href="/frameworks/anthropic" />
+</CardGroup>
+
+<Note>
+  These are starting points — adapt the tool set and your framework's exact API to your version.
+  The endpoints they call are stable.
+</Note>

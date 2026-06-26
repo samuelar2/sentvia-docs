@@ -52,6 +52,18 @@
             ]
           },
           {
+            "group": "Agent frameworks",
+            "pages": [
+              "frameworks/overview",
+              "frameworks/langchain",
+              "frameworks/openai-agents",
+              "frameworks/vercel-ai-sdk",
+              "frameworks/crewai",
+              "frameworks/llamaindex",
+              "frameworks/anthropic"
+            ]
+          },
+          {
             "group": "DNS guides",
             "pages": [
               "guides/dns/cloudflare",

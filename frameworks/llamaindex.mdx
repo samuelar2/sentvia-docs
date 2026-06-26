@@ -1,0 +1,44 @@
+---
+title: 'LlamaIndex'
+description: 'Email tools for a LlamaIndex agent.'
+---
+
+LlamaIndex wraps Python functions as tools with `FunctionTool`, which you give to an agent.
+
+## Install
+
+```bash
+pip install llama-index requests
+```
+
+## Define the tools and agent
+
+```python
+import os, requests
+from llama_index.core.tools import FunctionTool
+from llama_index.core.agent.workflow import FunctionAgent
+from llama_index.llms.openai import OpenAI
+
+API = "https://api.sentvia.ai/v1"
+H = {"Authorization": f"Bearer {os.environ['SENTVIA_KEY']}"}
+
+def send_email(inbox_id: str, to: str, subject: str, body: str) -> dict:
+    """Send an email from an inbox to a recipient."""
+    return requests.post(f"{API}/messages", headers=H,
+        json={"inbox_id": inbox_id, "to": [to], "subject": subject, "text": body}).json()
+
+def check_inbox(inbox_id: str) -> list:
+    """List recent messages in an inbox."""
+    return requests.get(f"{API}/messages", headers=H,
+        params={"inbox_id": inbox_id, "limit": 10}).json()["messages"]
+
+tools = [FunctionTool.from_defaults(fn=f) for f in (send_email, check_inbox)]
+
+agent = FunctionAgent(tools=tools, llm=OpenAI(model="gpt-4o"),
+                      system_prompt="You manage an email inbox.")
+
+import asyncio
+print(asyncio.run(agent.run("Check inbox inb_123 and tell me what needs a reply.")))
+```
+
+<Tip>LlamaIndex also has first-class MCP support — the [Sentvia MCP server](/guides/mcp) drops in directly.</Tip>
