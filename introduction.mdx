@@ -1,0 +1,59 @@
+---
+title: Introduction
+description: "Email infrastructure for AI agents — inboxes, sending, receiving, threading, and webhooks in one API."
+---
+
+Sentvia gives your AI agents a real email address. Create inboxes on demand, send
+and receive mail, follow conversations as threads, and react to incoming email in
+real time over webhooks — all from one clean API (or natively as agent tools over
+[MCP](/guides/mcp)).
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="bolt" href="/quickstart">
+    Create an inbox and send your first email in under five minutes.
+  </Card>
+  <Card title="Authentication" icon="key" href="/authentication">
+    API keys, the base URL, and how requests are authenticated.
+  </Card>
+  <Card title="Receiving email" icon="inbox" href="/concepts/receiving">
+    Get inbound mail and delivery events delivered to your endpoint.
+  </Card>
+  <Card title="API reference" icon="code" href="/api-reference/introduction">
+    Every endpoint, request, and response.
+  </Card>
+</CardGroup>
+
+## What you can build
+
+- **Support & sales agents** that own an inbox, triage incoming mail, and reply in-thread.
+- **Per-user inboxes** — spin up a fresh address for every customer, task, or workflow.
+- **Transactional senders** — invoices, receipts, alerts, with deliverability handled for you.
+- **Anything that reads or writes email**, without standing up SMTP/IMAP or managing reputation.
+
+## How it works
+
+<Steps>
+  <Step title="Create an inbox">
+    `POST /inboxes` returns an address like `support-bot@mail.sentvia.ai` — ready
+    to send and receive immediately on the shared domain.
+  </Step>
+  <Step title="Send & receive">
+    Send with `POST /messages`. Inbound mail is parsed, threaded, and POSTed to
+    your webhook (or polled via `GET /messages`).
+  </Step>
+  <Step title="Stay in thread">
+    Replies and forwards keep correct `In-Reply-To`/`References` headers, so
+    conversations thread cleanly in every mail client.
+  </Step>
+</Steps>
+
+## Deliverability, handled
+
+Every Sentvia domain ships with **SPF, DKIM, and DMARC** configured, automatic
+**bounce/complaint suppression**, and reputation isolation on higher plans. You
+focus on the agent; we keep the mail landing in the inbox.
+
+<Note>
+  Base URL: `https://sentvia-api-production.up.railway.app/v1`. All requests use a
+  Bearer API key — see [Authentication](/authentication).
+</Note>

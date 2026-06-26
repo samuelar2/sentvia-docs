@@ -1,0 +1,143 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Sentvia",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#4f46e5",
+    "light": "#6366f1",
+    "dark": "#4338ca",
+    "anchors": {
+      "from": "#4f46e5",
+      "to": "#6366f1"
+    }
+  },
+  "openapi": "https://sentvia-api-production.up.railway.app/openapi.json",
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "mailto:support@sentvia.ai"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Open dashboard",
+    "url": "https://console.sentvia.ai"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Dashboard",
+      "icon": "gauge",
+      "url": "https://console.sentvia.ai"
+    },
+    {
+      "name": "Website",
+      "icon": "globe",
+      "url": "https://sentvia.ai"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get started",
+      "pages": ["introduction", "quickstart", "authentication"]
+    },
+    {
+      "group": "Core concepts",
+      "pages": [
+        "concepts/inboxes",
+        "concepts/sending",
+        "concepts/receiving",
+        "concepts/threads"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/search",
+        "guides/attachments",
+        "guides/custom-domains",
+        "guides/allow-block-lists",
+        "guides/mcp",
+        "guides/errors"
+      ]
+    },
+    {
+      "group": "API reference",
+      "pages": ["api-reference/introduction"]
+    },
+    {
+      "group": "Inboxes",
+      "pages": [
+        "api-reference/inboxes/post",
+        "api-reference/inboxes/get",
+        "api-reference/inboxes/delete-id"
+      ]
+    },
+    {
+      "group": "Messages",
+      "pages": [
+        "api-reference/messages/post",
+        "api-reference/messages/get",
+        "api-reference/messages/get-id",
+        "api-reference/messages/post-id-reply",
+        "api-reference/messages/post-id-forward"
+      ]
+    },
+    {
+      "group": "Threads",
+      "pages": ["api-reference/threads/get", "api-reference/threads/get-id"]
+    },
+    {
+      "group": "Drafts",
+      "pages": [
+        "api-reference/drafts/post",
+        "api-reference/drafts/get",
+        "api-reference/drafts/get-id",
+        "api-reference/drafts/patch-id",
+        "api-reference/drafts/post-id-send",
+        "api-reference/drafts/delete-id"
+      ]
+    },
+    {
+      "group": "Labels",
+      "pages": [
+        "api-reference/labels/post",
+        "api-reference/labels/get",
+        "api-reference/labels/post-id-assign",
+        "api-reference/labels/post-id-unassign",
+        "api-reference/labels/delete-id"
+      ]
+    },
+    {
+      "group": "Lists",
+      "pages": [
+        "api-reference/lists/post",
+        "api-reference/lists/get",
+        "api-reference/lists/delete-id"
+      ]
+    },
+    {
+      "group": "Webhooks",
+      "pages": [
+        "api-reference/webhooks/post",
+        "api-reference/webhooks/get",
+        "api-reference/webhooks/delete-id"
+      ]
+    },
+    {
+      "group": "Attachments",
+      "pages": ["api-reference/attachments/get-id"]
+    }
+  ],
+  "footerSocials": {
+    "website": "https://sentvia.ai"
+  }
+}

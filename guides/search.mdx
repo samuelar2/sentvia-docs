@@ -1,0 +1,32 @@
+---
+title: 'Search'
+description: 'Find messages by keyword, meaning, or a blend of both.'
+---
+
+Search across every inbox in your workspace with `GET /messages`. Three modes:
+
+| Mode | How it works | Plan |
+| --- | --- | --- |
+| `keyword` | Full-text search (Postgres FTS). Fast, exact terms. | All plans |
+| `semantic` | Vector similarity — finds messages by **meaning**, not just words. | Pro and up |
+| `hybrid` | Weighted blend of keyword + semantic. Best overall relevance. | Pro and up |
+
+```bash
+curl "https://…/v1/messages?query=refund%20policy&mode=hybrid&limit=10" \
+  -H "Authorization: Bearer sv_live_…"
+```
+
+```json
+{ "mode_used": "hybrid", "messages": [
+  { "id": "m_…", "subject": "Re: refund request", "from_addr": "jane@acme.com", "score": 0.91 }
+] }
+```
+
+- **No `query`** → returns the most recent messages (`mode_used: "recent"`).
+- **`inbox_id`** → restrict to one inbox.
+- On plans without semantic search, `semantic`/`hybrid` gracefully **fall back to keyword** (the response's `mode_used` tells you what ran).
+
+<Note>
+  Semantic search embeds message content automatically as mail arrives — there's
+  nothing to index yourself.
+</Note>

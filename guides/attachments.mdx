@@ -1,0 +1,63 @@
+---
+title: 'Attachments & storage'
+description: 'Send and receive files, and how storage limits work.'
+---
+
+## Sending attachments
+
+Include a base64-encoded `attachments` array on `POST /messages` (or reply/forward):
+
+```json
+{
+  "inbox_id": "…",
+  "to": ["customer@example.com"],
+  "subject": "Your invoice",
+  "text": "Attached.",
+  "attachments": [
+    { "filename": "invoice.pdf", "content_type": "application/pdf", "content_base64": "JVBERi0…" }
+  ]
+}
+```
+
+## Receiving attachments
+
+Inbound attachments are stored and surfaced on the message — both in the webhook
+payload and on `GET /messages/{id}` / `GET /threads/{id}`:
+
+```json
+"attachments": [
+  { "id": "a_…", "filename": "receipt.pdf", "mime_type": "application/pdf",
+    "size_bytes": 48213, "url": "https://…signed…" }
+]
+```
+
+The `url` is a **short-lived signed download link** — fetch the bytes directly from
+storage, no extra auth needed. You can also mint a fresh link any time with
+`GET /attachments/{id}`.
+
+## Size limit
+
+Email providers cap message size, so a single email's attachments must fit within
+**~7 MB** (the base64-encoded message stays under the 10 MB provider limit).
+Oversized sends return `413 attachment_too_large` — caught before sending, never a
+silent failure.
+
+<Note>
+  Need to move bigger files? Talk to us about large-file support (direct-to-storage
+  uploads) on higher plans.
+</Note>
+
+## Storage limit
+
+Total attachment storage is a **per-plan cap**:
+
+| Plan | Storage |
+| --- | --- |
+| Free | 1 GB |
+| Pro | 20 GB |
+| Scale | 100 GB |
+| Business | 500 GB |
+
+Sending an attachment that would exceed your cap returns `402 storage_limit_reached`.
+Inbound mail is **never rejected** — it's always stored, and the dashboard warns
+you as you approach the limit. Track usage on the [Overview](https://console.sentvia.ai).

@@ -1,0 +1,50 @@
+---
+title: 'Authentication'
+description: 'API keys, the base URL, and how requests are authenticated.'
+---
+
+## Base URL
+
+```
+https://sentvia-api-production.up.railway.app/v1
+```
+
+All product endpoints live under `/v1`. Requests and responses are JSON.
+
+## API keys
+
+Sentvia authenticates with a **Bearer API key**. Create and revoke keys from the
+[dashboard](https://console.sentvia.ai) under **API keys**. A key looks like:
+
+```
+sv_live_3Sg…
+```
+
+Pass it on every request:
+
+```bash
+curl https://sentvia-api-production.up.railway.app/v1/inboxes \
+  -H "Authorization: Bearer sv_live_…"
+```
+
+<Warning>
+  Keys grant full access to your workspace's inboxes and mail. **Never** ship a
+  key in client-side code or commit it to source control. Store it in an
+  environment variable or a secrets manager.
+</Warning>
+
+## Key management
+
+- **Multiple keys** per workspace — issue a separate key per service or environment.
+- **Rotate freely** — create a new key, roll it out, then revoke the old one. Revocation is instant.
+- **Last-used tracking** — the dashboard shows when each key was last seen, so stale keys are easy to spot.
+
+## Errors
+
+A missing or invalid key returns `401`:
+
+```json
+{ "error": "invalid token" }
+```
+
+See [Error handling](/guides/errors) for the full list of status codes.

@@ -1,0 +1,63 @@
+---
+title: 'Sending email'
+description: 'Send, reply, and forward — with clean threading and idempotency.'
+---
+
+## Send a message
+
+```bash
+curl -X POST https://sentvia-api-production.up.railway.app/v1/messages \
+  -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
+  -d '{
+    "inbox_id": "INBOX_ID",
+    "to": ["customer@example.com"],
+    "cc": [],
+    "subject": "Your order shipped",
+    "text": "Tracking: 1Z…",
+    "html": "<p>Tracking: <b>1Z…</b></p>"
+  }'
+```
+
+```json Response
+{ "id": "m_…", "thread_id": "t_…", "direction": "outbound",
+  "from_addr": "support-bot@mail.sentvia.ai", "subject": "Your order shipped" }
+```
+
+| Field | Notes |
+| --- | --- |
+| `inbox_id` | The sending inbox (required). |
+| `to`, `cc`, `bcc` | Arrays of addresses. At least one `to` required. |
+| `subject` | Required. |
+| `text` / `html` | Provide either or both. |
+| `attachments` | Base64 — see [Attachments](/guides/attachments). |
+| `in_reply_to`, `references` | Set these to thread into an existing conversation. |
+| `client_id` | Optional idempotency key (see below). |
+
+## Reply & forward
+
+Replying derives the recipient, subject, and threading headers from the original
+message — you only supply the body:
+
+```bash
+curl -X POST https://…/v1/messages/MESSAGE_ID/reply \
+  -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
+  -d '{ "text": "Happy to help — here are the next steps.", "reply_all": true }'
+```
+
+Forward to new recipients with `POST /messages/{id}/forward`.
+
+## Idempotency
+
+Pass a unique `client_id` to make sends safe to retry — a repeated `client_id`
+returns the original message instead of sending a duplicate:
+
+```json
+{ "inbox_id": "…", "to": ["a@b.com"], "subject": "Hi", "text": "…", "client_id": "order-4821-confirm" }
+```
+
+## Suppression & blocking
+
+Before sending, Sentvia drops recipients that are **suppressed** (a prior hard
+bounce or complaint) or on your [block list](/guides/allow-block-lists). If no
+deliverable recipient remains, the send returns `422` with the blocked addresses —
+protecting your sending reputation automatically.

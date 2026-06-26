@@ -1,0 +1,69 @@
+---
+title: 'Receiving email'
+description: 'Inbound mail and delivery events, delivered to your endpoint and verified.'
+---
+
+Inbound email to any of your inboxes is parsed, threaded, and delivered to you two
+ways: **webhooks** (push, recommended) or **polling** with `GET /messages`.
+
+## Register a webhook
+
+```bash
+curl -X POST https://sentvia-api-production.up.railway.app/v1/webhooks \
+  -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
+  -d '{ "url": "https://your-app.com/sentvia", "events": ["message.received","message.bounced"] }'
+```
+
+The response returns a signing **`secret`** — shown **once**. Store it; you'll use
+it to verify every delivery.
+
+## Events
+
+| Event | Fires when |
+| --- | --- |
+| `message.received` | An inbound email arrives at one of your inboxes. |
+| `message.delivered` | An outbound message was accepted by the recipient's server. |
+| `message.bounced` | A hard or soft bounce (the address is auto-suppressed). |
+| `message.complained` | A spam complaint (the address is auto-suppressed). |
+| `message.rejected` | The provider rejected the send. |
+
+## Payload & signature
+
+Each delivery is a JSON `POST` with two headers:
+
+```http
+x-sentvia-event: message.received
+x-sentvia-signature: sha256=<hmac>
+```
+
+The body is `{ "event": "...", ...payload }`. Verify it by computing an
+HMAC-SHA256 of the **raw request body** with your webhook secret:
+
+```ts
+import crypto from "node:crypto";
+
+function verify(rawBody: string, signature: string, secret: string) {
+  const expected = "sha256=" + crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+}
+```
+
+<Warning>
+  Verify the signature on every request and reject mismatches. Always hash the
+  **raw** body bytes — re-serializing the JSON will change the signature.
+</Warning>
+
+## Delivery & retries
+
+Deliveries are retried with backoff on non-2xx responses, so your endpoint can be
+briefly unavailable without losing events. Respond `2xx` quickly (do heavy work
+async). Attachment metadata — including short-lived signed download URLs — is
+included in the payload; see [Attachments](/guides/attachments).
+
+## Polling alternative
+
+No public endpoint? Poll recent mail instead:
+
+```bash
+curl "https://…/v1/messages?inbox_id=INBOX_ID&limit=25" -H "Authorization: Bearer sv_live_…"
+```

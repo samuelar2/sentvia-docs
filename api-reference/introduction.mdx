@@ -1,0 +1,37 @@
+---
+title: 'API reference'
+description: 'Base URL, authentication, and conventions for the Sentvia API.'
+---
+
+The Sentvia API is organized around REST: predictable resource URLs, JSON request
+and response bodies, and standard HTTP status codes.
+
+## Base URL
+
+```
+https://sentvia-api-production.up.railway.app/v1
+```
+
+## Authentication
+
+Every request requires a Bearer API key:
+
+```bash
+curl https://sentvia-api-production.up.railway.app/v1/inboxes \
+  -H "Authorization: Bearer sv_live_…"
+```
+
+Create and revoke keys in the [dashboard](https://console.sentvia.ai). See
+[Authentication](/authentication) for details.
+
+## Conventions
+
+- **JSON everywhere** — send `Content-Type: application/json`; responses are JSON.
+- **IDs** are opaque strings; don't parse them.
+- **Timestamps** are ISO-8601 UTC.
+- **Errors** use standard status codes with an `{ "error": "…" }` body — see [Error handling](/guides/errors).
+- **Idempotency** — pass a `client_id` on sends to make retries safe.
+
+The endpoints in this section are generated from our
+[OpenAPI spec](https://sentvia-api-production.up.railway.app/openapi.json) — use the
+**Try it** panel to call them live with your key.

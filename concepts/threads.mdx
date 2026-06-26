@@ -1,0 +1,49 @@
+---
+title: 'Threads & messages'
+description: 'How Sentvia groups a back-and-forth into a single conversation.'
+---
+
+A **thread** is one conversation. Sentvia reconstructs threads from RFC-5322
+headers (`Message-ID`, `In-Reply-To`, `References`), so an exchange between your
+agent and a customer stays together — and threads correctly in their mail client too.
+
+## List threads
+
+```bash
+curl "https://…/v1/threads?inbox_id=INBOX_ID&limit=25" -H "Authorization: Bearer sv_live_…"
+```
+
+```json
+{ "threads": [
+  { "id": "t_…", "inbox_id": "…", "subject": "Order #4821", "last_message_at": "2026-06-26T…" }
+] }
+```
+
+## Read a thread
+
+`GET /threads/{id}` returns the full conversation, oldest first, with bodies and
+attachments inlined:
+
+```json
+{
+  "id": "t_…",
+  "subject": "Order #4821",
+  "messages": [
+    { "id": "m_1", "direction": "inbound",  "from_addr": "jane@acme.com",
+      "body_text": "Where's my order?", "attachments": [] },
+    { "id": "m_2", "direction": "outbound", "from_addr": "support-bot@mail.sentvia.ai",
+      "body_text": "On its way — tracking attached.", "attachments": [ … ] }
+  ]
+}
+```
+
+## Single message
+
+`GET /messages/{id}` returns one message with its `delivery_status`, attachments
+(with signed URLs), and any [labels](/api-reference/labels/get).
+
+## Keep replies in-thread
+
+When you [reply or forward](/concepts/sending), Sentvia sets the threading headers
+for you. If you send a fresh `POST /messages` that should join an existing thread,
+pass `in_reply_to` (and optionally `references`) from the message you're answering.

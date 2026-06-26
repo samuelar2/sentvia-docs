@@ -1,0 +1,36 @@
+---
+title: 'Allow & block lists'
+description: 'Control which addresses your agents can email or receive from.'
+---
+
+Allow/block **rules** let you explicitly permit or deny specific addresses or
+domains, on top of the automatic suppression of bounces and complaints.
+
+## Add a rule
+
+```bash
+curl -X POST https://sentvia-api-production.up.railway.app/v1/lists \
+  -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
+  -d '{ "kind": "block", "direction": "outbound", "pattern": "competitor.com" }'
+```
+
+| Field | Values |
+| --- | --- |
+| `kind` | `allow` or `block` |
+| `direction` | `inbound`, `outbound`, or `both` |
+| `pattern` | A full address (`spam@x.com`) or a bare domain (`x.com`) |
+
+List and remove with `GET /lists` and `DELETE /lists/{id}`.
+
+## How rules apply
+
+- **Block (outbound)** — sends to a matching recipient are dropped; if none remain, the send returns `422`.
+- **Block (inbound)** — mail from a matching sender is rejected before it reaches an inbox.
+- **Allow** — explicitly permits an address that might otherwise be filtered.
+
+## Automatic suppression
+
+Separately from your rules, Sentvia maintains an automatic **suppression list**: any
+address that hard-bounces or files a spam complaint is suppressed so you never send
+to it again. This is managed for you — it protects your sending reputation without
+any configuration.

@@ -1,0 +1,57 @@
+---
+title: 'Inboxes'
+description: 'Email addresses your agents send and receive from.'
+---
+
+An **inbox** is an email address your agent owns. Inboxes send and receive mail,
+group messages into threads, and are the unit you provision per agent, user, or task.
+
+## Create an inbox
+
+```bash
+curl -X POST https://sentvia-api-production.up.railway.app/v1/inboxes \
+  -H "Authorization: Bearer sv_live_…" -H "Content-Type: application/json" \
+  -d '{ "local_part": "support-bot", "display_name": "Support" }'
+```
+
+```json Response
+{
+  "id": "b1f2…",
+  "local_part": "support-bot",
+  "display_name": "Support",
+  "address": "support-bot@mail.sentvia.ai"
+}
+```
+
+| Field | Required | Notes |
+| --- | --- | --- |
+| `local_part` | yes | The part before the `@`. Lowercased automatically; `[a-z0-9._-]` only. |
+| `display_name` | no | Friendly From name on outbound mail. |
+| `domain_id` | no | A verified [custom domain](/guides/custom-domains). Defaults to the shared `mail.sentvia.ai`. |
+
+<Note>
+  Addresses are **globally unique** on the shared domain. Re-using a `local_part`
+  that's already taken returns `409 address_taken`.
+</Note>
+
+## List & delete
+
+```bash
+curl https://sentvia-api-production.up.railway.app/v1/inboxes -H "Authorization: Bearer sv_live_…"
+curl -X DELETE https://sentvia-api-production.up.railway.app/v1/inboxes/INBOX_ID -H "Authorization: Bearer sv_live_…"
+```
+
+## Inbox limits
+
+Each plan includes a number of concurrent inboxes. Creating one past your limit
+returns `402 inbox_limit_reached` with `upgrade: true`.
+
+| Plan | Inboxes |
+| --- | --- |
+| Free | 3 |
+| Pro | 100 |
+| Scale | 1,500 |
+| Business | 15,000 |
+
+Agents typically create **one inbox per user or task**, so generous limits matter
+— see the [dashboard](https://console.sentvia.ai) for your current usage.

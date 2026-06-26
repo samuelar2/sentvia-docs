@@ -1,0 +1,40 @@
+---
+title: 'Error handling'
+description: 'Status codes and error shapes you should handle.'
+---
+
+Errors are returned with a standard HTTP status and a JSON body:
+
+```json
+{ "error": "storage_limit_reached", "limit_bytes": 1073741824, "upgrade": true }
+```
+
+## Status codes
+
+| Status | Meaning | Notes |
+| --- | --- | --- |
+| `400` | Bad request | A required field is missing or malformed. |
+| `401` | Unauthorized | Missing or invalid API key. |
+| `402` | Upgrade required | A plan limit was hit (`upgrade: true`). See below. |
+| `404` | Not found | The resource doesn't exist or isn't yours. |
+| `409` | Conflict | `address_taken` — that inbox address is already in use. |
+| `413` | Payload too large | `attachment_too_large` — over the per-message size limit. |
+| `422` | Unprocessable | `no deliverable recipients` — all recipients suppressed/blocked. |
+
+## Plan-limit errors (`402`)
+
+These carry `upgrade: true` so you can prompt the user to upgrade:
+
+| `error` | Trigger |
+| --- | --- |
+| `inbox_limit_reached` | Over your plan's inbox cap. |
+| `custom_domains_require_paid_plan` | Custom domains need Pro or higher. |
+| `dedicated_subdomain_requires_scale` | Dedicated subdomains need Scale or higher. |
+| `storage_limit_reached` | Over your attachment storage cap. |
+
+## Recommendations
+
+- **Authenticate** every request and handle `401` by surfacing a key problem, not retrying.
+- **Treat `402` as actionable** — link the user to billing rather than failing silently.
+- **Use idempotency** (`client_id`) on sends so retries after a network blip never duplicate mail.
+- **Verify webhook signatures** and return `2xx` quickly; failures are retried with backoff.
