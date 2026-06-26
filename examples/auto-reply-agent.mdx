@@ -3,7 +3,7 @@ title: 'Auto-reply agent'
 description: 'An agent that reads inbound email and replies in thread.'
 ---
 
-A minimal support agent: when an email arrives, an LLM drafts a reply and Sentvia sends it back
+A minimal support agent: when an email arrives, an LLM drafts a reply and SentVia sends it back
 in the same thread. The pattern is **webhook → generate → reply**.
 
 ## 1. Register a webhook
@@ -81,7 +81,7 @@ def inbound():
 </CodeGroup>
 
 <Note>
-  Replies thread automatically — Sentvia sets `In-Reply-To`/`References` and prefixes the subject
+  Replies thread automatically — SentVia sets `In-Reply-To`/`References` and prefixes the subject
   with `Re:`. No need to track headers yourself.
 </Note>
 

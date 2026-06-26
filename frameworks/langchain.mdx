@@ -1,9 +1,9 @@
 ---
 title: 'LangChain'
-description: 'Give a LangChain agent email tools backed by Sentvia.'
+description: 'Give a LangChain agent email tools backed by SentVia.'
 ---
 
-Wrap Sentvia operations as LangChain tools with the `@tool` decorator, then hand them to an agent.
+Wrap SentVia operations as LangChain tools with the `@tool` decorator, then hand them to an agent.
 
 ## Install
 
@@ -55,4 +55,4 @@ print(result["messages"][-1].content)
 The model now calls `create_inbox` then `send_email` on its own. Add `reply` and `check_inbox`
 tools to build a full back-and-forth agent.
 
-<Tip>Prefer no glue at all? Connect the [Sentvia MCP server](/guides/mcp) and skip tool definitions.</Tip>
+<Tip>Prefer no glue at all? Connect the [SentVia MCP server](/guides/mcp) and skip tool definitions.</Tip>

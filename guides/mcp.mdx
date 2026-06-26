@@ -3,19 +3,19 @@ title: 'MCP for agents'
 description: 'Give your agent email as native tools over the Model Context Protocol.'
 ---
 
-Sentvia ships a **Model Context Protocol (MCP) server** so an AI agent can use email
+SentVia ships a **Model Context Protocol (MCP) server** so an AI agent can use email
 as first-class tools — create inboxes, send and reply, search, manage webhooks —
 without writing a single API call. The agent simply *calls a tool*.
 
 ## Why MCP
 
 With the REST API your code orchestrates email. With MCP, the **agent itself**
-decides when to check its inbox, draft a reply, or escalate — Sentvia's operations
+decides when to check its inbox, draft a reply, or escalate — SentVia's operations
 appear directly in the model's tool list.
 
 ## Connect
 
-Point your MCP-capable client (Claude, or any MCP host) at the Sentvia server and
+Point your MCP-capable client (Claude, or any MCP host) at the SentVia server and
 authenticate with your API key:
 
 ```json
@@ -38,7 +38,7 @@ authenticate with your API key:
 
 ## Available tools
 
-The server exposes the core Sentvia operations as tools, mirroring the API:
+The server exposes the core SentVia operations as tools, mirroring the API:
 
 - **Inboxes** — create, list, delete
 - **Messages** — send, reply, forward, get, search

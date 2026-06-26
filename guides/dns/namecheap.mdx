@@ -1,10 +1,10 @@
 ---
 title: 'DNS: Namecheap'
-description: 'Publish your Sentvia DNS records in Namecheap.'
+description: 'Publish your SentVia DNS records in Namecheap.'
 ---
 
 After adding a [custom domain](/guides/custom-domains), add the DKIM, SPF, DMARC, and MX records
-Sentvia returned in Namecheap.
+SentVia returned in Namecheap.
 
 <Steps>
   <Step title="Open Advanced DNS">
@@ -31,5 +31,5 @@ Sentvia returned in Namecheap.
   **Mail Settings** is set to **Custom MX**, or your MX records won't apply.
 </Warning>
 
-Sentvia verifies automatically once the records resolve. Check the **Domains** page in the
+SentVia verifies automatically once the records resolve. Check the **Domains** page in the
 [dashboard](https://console.sentvia.ai) or call `POST /domains/{id}/verify` to re-check.

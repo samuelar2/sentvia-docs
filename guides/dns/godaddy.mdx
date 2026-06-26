@@ -1,10 +1,10 @@
 ---
 title: 'DNS: GoDaddy'
-description: 'Publish your Sentvia DNS records in GoDaddy.'
+description: 'Publish your SentVia DNS records in GoDaddy.'
 ---
 
 After adding a [custom domain](/guides/custom-domains), add the DKIM, SPF, DMARC, and MX records
-Sentvia returned in GoDaddy.
+SentVia returned in GoDaddy.
 
 <Steps>
   <Step title="Open DNS management">
@@ -26,5 +26,5 @@ Sentvia returned in GoDaddy.
   `token._domainkey.mail.yourco.com.yourco.com`. Enter only the part **before** your domain.
 </Warning>
 
-Sentvia verifies automatically once the records resolve. Check the **Domains** page in the
+SentVia verifies automatically once the records resolve. Check the **Domains** page in the
 [dashboard](https://console.sentvia.ai) or call `POST /domains/{id}/verify` to re-check.

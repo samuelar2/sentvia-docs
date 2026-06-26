@@ -54,7 +54,7 @@ curl -X POST https://api.sentvia.ai/v1/messages \
     "inbox_id": "INBOX_ID",
     "to": ["customer@example.com"],
     "subject": "Hello from your agent",
-    "text": "This email was sent by an AI agent via Sentvia."
+    "text": "This email was sent by an AI agent via SentVia."
   }'
 ```
 
@@ -66,7 +66,7 @@ await fetch("https://api.sentvia.ai/v1/messages", {
     inbox_id: inbox.id,
     to: ["customer@example.com"],
     subject: "Hello from your agent",
-    text: "This email was sent by an AI agent via Sentvia.",
+    text: "This email was sent by an AI agent via SentVia.",
   }),
 });
 ```
@@ -77,7 +77,7 @@ the `thread_id` to follow the conversation.
 
 ## 4. Receive the reply
 
-When the customer replies, Sentvia threads it and POSTs a `message.received`
+When the customer replies, SentVia threads it and POSTs a `message.received`
 event to your webhook. Register one in two lines:
 
 ```bash

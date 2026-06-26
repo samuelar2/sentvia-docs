@@ -1,18 +1,18 @@
 ---
 title: 'Deliverability'
-description: 'How Sentvia keeps your mail out of spam — SPF, DKIM, DMARC, and good sending hygiene.'
+description: 'How SentVia keeps your mail out of spam — SPF, DKIM, DMARC, and good sending hygiene.'
 ---
 
 Landing in the inbox comes down to **authentication** (proving you're allowed to send) and
-**reputation** (a track record of wanted mail). Sentvia handles the hard parts; this explains
+**reputation** (a track record of wanted mail). SentVia handles the hard parts; this explains
 what's happening and how to keep it healthy.
 
 ## The three records
 
-When you verify a [custom domain](/guides/custom-domains), Sentvia gives you these to publish.
+When you verify a [custom domain](/guides/custom-domains), SentVia gives you these to publish.
 On the shared `mail.sentvia.ai` domain they're already in place.
 
-| Record | What it proves | What Sentvia returns |
+| Record | What it proves | What SentVia returns |
 | --- | --- | --- |
 | **DKIM** (CNAME ×3) | The message wasn't tampered with and came from you | `<token>._domainkey.<domain>` → `<token>.dkim.amazonses.com` |
 | **SPF** (TXT) | The sending servers are authorized for your domain | `v=spf1 include:amazonses.com ~all` |
@@ -26,7 +26,7 @@ Publish them with your DNS provider — step-by-step guides for
 
 ## Ramp your DMARC policy
 
-Start permissive and tighten as you build history. Sentvia lets you ramp the policy
+Start permissive and tighten as you build history. SentVia lets you ramp the policy
 (`POST /domains/{id}/dmarc`):
 
 <Steps>
@@ -38,7 +38,7 @@ Start permissive and tighten as you build history. Sentvia lets you ramp the pol
 ## Reputation hygiene
 
 - **Warm up.** Ramp volume gradually on a new domain rather than blasting from day one.
-- **Keep bounce/complaint rates low.** Sentvia auto-suppresses bounced and complained addresses so
+- **Keep bounce/complaint rates low.** SentVia auto-suppresses bounced and complained addresses so
   you never re-send to them — watch your [Metrics](https://console.sentvia.ai) deliverability score.
 - **Send wanted mail.** Relevant, expected messages with easy opt-out beat volume every time.
 - **Use a dedicated subdomain/IP** (Scale and up) to isolate your reputation from other tenants.

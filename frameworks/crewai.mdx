@@ -1,6 +1,6 @@
 ---
 title: 'CrewAI'
-description: 'Give a CrewAI agent email tools backed by Sentvia.'
+description: 'Give a CrewAI agent email tools backed by SentVia.'
 ---
 
 CrewAI exposes tools via the `@tool` decorator; attach them to an agent.
@@ -45,4 +45,4 @@ task = Task(description="Check inbox inb_123 and draft replies.", agent=concierg
 print(Crew(agents=[concierge], tasks=[task]).kickoff())
 ```
 
-<Tip>CrewAI also supports MCP — the [Sentvia MCP server](/guides/mcp) gives you these tools with no wrappers.</Tip>
+<Tip>CrewAI also supports MCP — the [SentVia MCP server](/guides/mcp) gives you these tools with no wrappers.</Tip>
