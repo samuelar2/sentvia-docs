@@ -1,0 +1,90 @@
+---
+title: 'OpenClaw'
+description: 'Give your OpenClaw agent its own email address with the SentVia MCP server.'
+---
+
+[OpenClaw](https://openclaw.ai) is an open-source personal AI agent that runs
+continuously on your own machine. It speaks MCP natively, so connecting the
+[SentVia MCP server](/guides/mcp) gives it a real, dedicated email identity: an
+address it owns, sends from, and watches — separate from your personal inbox.
+
+Things an OpenClaw agent does with its own address:
+
+- **Send and follow up on your behalf** — chase invoices, book appointments,
+  reply in-thread when the answer comes back.
+- **Own its own signups** — newsletters, receipts, and service accounts go to
+  the agent's inbox, not yours, and it triages them.
+- **Escalate by email** — anything it can't handle gets forwarded to you with
+  its notes on top.
+
+## Connect
+
+You need a SentVia API key (`sv_live_…`) from the
+[dashboard](https://console.sentvia.ai).
+
+Register the server with the OpenClaw CLI:
+
+```bash
+openclaw mcp add sentvia --command npx --arg -y --arg sentvia-mcp
+```
+
+then add your API key to the server's `env`. OpenClaw stores MCP servers in
+`~/.openclaw/openclaw.json` under `mcp.servers` — the finished entry looks like:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "sentvia": {
+        "command": "npx",
+        "args": ["-y", "sentvia-mcp"],
+        "env": { "SENTVIA_API_KEY": "sv_live_…" }
+      }
+    }
+  }
+}
+```
+
+Verify the connection and tool list:
+
+```bash
+openclaw mcp doctor --probe
+```
+
+You should see the `sentvia` server with 21 tools — inboxes, messages, threads,
+drafts, domains, webhooks, and allow/block rules
+(full list in the [MCP guide](/guides/mcp)).
+
+## Give the agent its address
+
+Once connected, this is a single instruction to your agent:
+
+```
+Create yourself an inbox called "claw" and introduce yourself
+to me by email at sam@example.com.
+```
+
+OpenClaw calls `create_inbox` (→ `claw@mail.sentvia.ai`, live immediately), then
+`send_message`. From there `search_messages`, `list_threads`, and
+`reply_to_message` cover the daily loop.
+
+<Tip>
+  Long-running agents pair well with **allow/block rules**: have the agent call
+  `add_address_rule` to block senders it decides are noise. Rules are enforced
+  server-side on both send and receive, so they hold even if the agent forgets.
+</Tip>
+
+## Getting inbound mail to the agent
+
+OpenClaw agents typically poll: a periodic task that calls `search_messages` (no
+query returns recent mail) or `list_threads` and processes anything new. For
+push instead of poll, register a [webhook](/concepts/receiving) pointing at an
+endpoint your OpenClaw can read, or use the
+[realtime WebSocket](/guides/realtime).
+
+<Note>
+  Treat inbound email as untrusted input to your agent — anyone can mail the
+  address. Keep the agent's inbox separate from credentials-bearing accounts,
+  and use [allow rules](/guides/allow-block-lists) if the agent should only ever
+  talk to known senders.
+</Note>

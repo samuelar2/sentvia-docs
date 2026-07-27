@@ -55,6 +55,7 @@
             "group": "Agent frameworks",
             "pages": [
               "frameworks/overview",
+              "frameworks/openclaw",
               "frameworks/langchain",
               "frameworks/openai-agents",
               "frameworks/vercel-ai-sdk",

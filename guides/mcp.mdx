@@ -1,11 +1,13 @@
 ---
 title: 'MCP for agents'
-description: 'Give your agent email as native tools over the Model Context Protocol.'
+description: 'Give your agent email as native tools over the Model Context Protocol — 21 tools via npx sentvia-mcp.'
 ---
 
-SentVia ships a **Model Context Protocol (MCP) server** so an AI agent can use email
-as first-class tools — create inboxes, send and reply, search, manage webhooks —
-without writing a single API call. The agent simply *calls a tool*.
+SentVia ships an open **Model Context Protocol (MCP) server** —
+[`sentvia-mcp` on npm](https://www.npmjs.com/package/sentvia-mcp) — so an AI agent
+can use email as first-class tools: create inboxes, send and reply, search,
+manage threads, webhooks and allow/block rules — without writing a single API
+call. The agent simply *calls a tool*.
 
 ## Why MCP
 
@@ -15,36 +17,66 @@ appear directly in the model's tool list.
 
 ## Connect
 
-Point your MCP-capable client (Claude, or any MCP host) at the SentVia server and
-authenticate with your API key:
+All you need is an API key (`sv_live_…`) from the
+[dashboard](https://console.sentvia.ai) — the same keys as the REST API
+([Authentication](/authentication)).
 
-```json
-{
-  "mcpServers": {
-    "sentvia": {
-      "command": "npx",
-      "args": ["-y", "sentvia-mcp"],
-      "env": { "SENTVIA_API_KEY": "sv_live_…" }
+<Tabs>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add sentvia --env SENTVIA_API_KEY=sv_live_… -- npx -y sentvia-mcp
+    ```
+  </Tab>
+  <Tab title="Claude Desktop / JSON config">
+    ```json
+    {
+      "mcpServers": {
+        "sentvia": {
+          "command": "npx",
+          "args": ["-y", "sentvia-mcp"],
+          "env": { "SENTVIA_API_KEY": "sv_live_…" }
+        }
+      }
     }
-  }
-}
-```
+    ```
+  </Tab>
+  <Tab title="OpenClaw">
+    ```bash
+    openclaw mcp add sentvia --command npx --arg -y --arg sentvia-mcp
+    ```
+    then set `SENTVIA_API_KEY` in the server's `env`. Full walkthrough:
+    [OpenClaw guide](/frameworks/openclaw).
+  </Tab>
+</Tabs>
 
-<Note>
-  The exact server command/endpoint for your workspace is shown in the
-  [dashboard](https://console.sentvia.ai). Authentication uses the same API keys as
-  the REST API — see [Authentication](/authentication).
-</Note>
+The server is a thin stdio wrapper over the REST API — no state of its own, and
+it runs wherever your agent runs (Node 20+).
 
 ## Available tools
 
-The server exposes the core SentVia operations as tools, mirroring the API:
-
-- **Inboxes** — create, list, delete
-- **Messages** — send, reply, forward, get, search
-- **Threads** — list, read a conversation
-- **Webhooks & lists** — manage delivery endpoints and allow/block rules
+| Area | Tools |
+| --- | --- |
+| Inboxes | `create_inbox` · `list_inboxes` · `delete_inbox` |
+| Messages | `send_message` · `reply_to_message` · `forward_message` · `get_message` · `search_messages` |
+| Threads | `list_threads` · `get_thread` |
+| Drafts | `create_draft` · `send_draft` · `list_drafts` |
+| Domains | `add_domain` · `get_domain` |
+| Webhooks | `create_webhook` · `list_webhooks` · `delete_webhook` |
+| Allow/block lists | `add_address_rule` · `list_address_rules` · `delete_address_rule` |
 
 Because the tools map onto the same endpoints documented in the
 [API reference](/api-reference/introduction), everything you read here applies —
 threading, idempotency, suppression, and attachments all behave identically.
+
+## Configuration
+
+| Env var | Required | Default |
+| --- | --- | --- |
+| `SENTVIA_API_KEY` | yes | — |
+| `SENTVIA_BASE_URL` | no | `https://api.sentvia.ai` |
+
+<Note>
+  Tools inherit the key's tenant scope: an agent can only see and act on its own
+  tenant's inboxes, threads, and rules. Suppression and allow/block rules are
+  enforced server-side, so a misbehaving agent can't mail past them.
+</Note>

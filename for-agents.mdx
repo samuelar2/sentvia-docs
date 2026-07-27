@@ -45,8 +45,24 @@ Most agents follow the same loop. Each step links to its full reference:
 
 ## Use it as native tools (MCP)
 
-Rather than calling the REST API, connect your agent to the **[SentVia MCP server](/guides/mcp)** —
-inbox, send, reply, and search become tools the model can call directly.
+Rather than calling the REST API, connect the **[SentVia MCP server](/guides/mcp)** —
+[`sentvia-mcp` on npm](https://www.npmjs.com/package/sentvia-mcp) — and all of the
+above becomes 21 tools the model calls directly:
+
+```json
+{
+  "mcpServers": {
+    "sentvia": {
+      "command": "npx",
+      "args": ["-y", "sentvia-mcp"],
+      "env": { "SENTVIA_API_KEY": "sv_live_…" }
+    }
+  }
+}
+```
+
+Running [OpenClaw](/frameworks/openclaw), [LangChain, CrewAI, or another
+framework](/frameworks/overview)? There's a per-framework recipe for each.
 
 ## Worked examples
 
